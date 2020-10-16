@@ -35,3 +35,13 @@ def room_new_view(request):
 
 def rooms_view(request):
     return render(request, 'reservation/rooms.html', context={'rooms': Room.objects.all()})
+
+
+def room_delete_by_id_view(request, id):
+    try:
+        room = Room.objects.get(pk=id)
+    except Room.DoesNotExist:
+        return HttpResponse('no room id {}'.format(id))
+    else:
+        room.delete()
+        return redirect('/rooms/')
