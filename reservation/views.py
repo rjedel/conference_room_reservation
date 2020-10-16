@@ -8,7 +8,6 @@ def room_new_view(request):
     if request.method == 'GET':
         return render(request, 'reservation/room_new.html')
     if request.method == 'POST':
-        # rooms_names_lst = [room.name for room in Room.objects.all()]
         name = request.POST.get('name')
         capacity = request.POST.get('capacity')
         projector = request.POST.get('projector')
@@ -32,3 +31,7 @@ def room_new_view(request):
         else:
             Room.objects.create(name=name, capacity=int(capacity), projector=projector)
             return redirect('/')
+
+
+def rooms_view(request):
+    return render(request, 'reservation/rooms.html', context={'rooms': Room.objects.all()})

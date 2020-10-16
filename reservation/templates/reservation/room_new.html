@@ -1,10 +1,10 @@
 {% extends "reservation/base.html" %}
-{% block title %} Edit Movie {% endblock %}
+{% block title %} New Room {% endblock %}
 {% block content %} {{ block.super }}
 <h2>Add a new conference room:</h2>
-{% if message %}
-<h1>{{ message }}</h1>
-{% endif %}
+    {% if message %}
+        <h1>{{ message }}</h1>
+    {% endif %}
 <form method="post">{% csrf_token %}
     <table>
         <tr>
