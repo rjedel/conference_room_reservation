@@ -62,8 +62,9 @@ def room_modify_by_id_view(request, id):
             message = ''
             if name is None or len(name) < 1:
                 message = 'enter room name'
-            # if name in [room.name for room in Room.objects.all()]:
-            #     message = 'this room already exists'
+            other_rooms = Room.objects.exclude(name=room.name)
+            if name in [room.name for room in other_rooms]:
+                message = f"room '{name}' already exists, choose a different name"
             try:
                 if int(capacity) < 1:
                     message = 'capacity must be greater than 1'
@@ -75,7 +76,7 @@ def room_modify_by_id_view(request, id):
                 projector = False
 
             if message:
-                return render(request, 'reservation/room_modify.html', context={'message': message})
+                return render(request, 'reservation/room_modify.html', context={'message': message, 'room': room})
             else:
                 room.name = name
                 room.capacity = int(capacity)
