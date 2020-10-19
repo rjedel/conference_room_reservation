@@ -1,5 +1,5 @@
 {% extends "reservation/base.html" %}
-{% block title %} New Room {% endblock %}
+{% block title %} Modify Room {% endblock %}
 {% block content %} {{ block.super }}
     <h2>Edit room:</h2>
     {% if message %}
@@ -23,7 +23,11 @@
                            id="id_projector"><label for="id_projector">projector
                     is available</label></td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Submit</button>
+                </td>
+            </tr>
         </table>
-        <button type="submit">Submit</button>
     </form>
 {% endblock %}

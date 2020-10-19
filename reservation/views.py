@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
-from .models import Room
+from .models import Room, Reservation
 
 
 def room_new_view(request):
@@ -83,3 +85,30 @@ def room_modify_by_id_view(request, id):
                 room.projector = projector
                 room.save()
                 return redirect('/rooms/')
+
+
+def room_reserve_by_id_view(request, id):
+    try:
+        room = Room.objects.get(pk=id)
+    except Room.DoesNotExist:
+        raise Http404
+    else:
+        if request.method == 'GET':
+            return render(request, 'reservation/room_reserve.html', context={'room': room})
+        if request.method == 'POST':
+            date_form = request.POST.get('date')
+            comment = request.POST.get('comment')
+            date_user = datetime.strptime(date_form, "%Y-%m-%d").date()
+            today = datetime.now().date()
+            if date_user < today:
+                return render(request, 'reservation/room_reserve.html', context={
+                    'room': room,
+                    'message': 'you can not reserve with a retrograde date'
+                })
+            if date_user in [_.date for _ in room.reservations.all()]:
+                return render(request, 'reservation/room_reserve.html', context={
+                    'room': room,
+                    'message': f'on {date_user}, the room is already reserved'
+                })
+            Reservation.objects.create(date=date_user, room=room, comment=comment)
+            return redirect('/rooms/')
