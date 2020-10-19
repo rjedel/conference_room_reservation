@@ -1,7 +1,7 @@
 {% extends "reservation/base.html" %}
 {% block title %} Rooms {% endblock %}
 {% block content %}
-    <table  id="customers">
+    <table id="customers">
         {% if rooms %}
             <tr>
                 <th>no.</th>
@@ -16,7 +16,7 @@
             {% for room in rooms %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ room.name }}</td>
+                    <td><a href="/room/details/{{ room.pk }}/">{{ room.name }}</a></td>
                     <td>{{ room.capacity }}</td>
                     <td>room availability</td>
                     <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>

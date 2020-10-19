@@ -1,0 +1,45 @@
+{% extends "reservation/base.html" %}
+{% block title %} Rooms {% endblock %}
+{% block content %}
+    <table id="customers">
+    <caption>Room details:</caption>
+        <tr>
+            <th>name</th>
+            <th>capacity</th>
+            <th>projector availability</th>
+            <th>edit room</th>
+            <th>delete room</th>
+            <th>book room</th>
+        </tr>
+        <tr>
+            <td>{{ room.name }}</td>
+            <td>{{ room.capacity }}</td>
+            <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>
+            <td><a href="/room/modify/{{ room.pk }}/">
+                <button>edit {{ room.name }}</button>
+            </a></td>
+            <td><a href="/room/delete/{{ room.pk }}/">
+                <button>delete {{ room.name }}</button>
+            </a></td>
+            <td><a href="/room/reserve/{{ room.pk }}/">
+                <button>reserve {{ room.name }}</button>
+            </a></td>
+        </tr>
+    </table>
+    <br>
+    <table id="customers">
+        <caption>Reservations:</caption>
+        <tr>
+            <th>date</th>
+            <th>comment</th>
+        </tr>
+        {% for obj in reservations %}
+            <tr>
+                <td>{{ obj.date|date:"Y F j" }}</td>
+                <td>{{ obj.comment }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">No future bookings for room {{ room.name }}.</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

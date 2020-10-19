@@ -105,10 +105,25 @@ def room_reserve_by_id_view(request, id):
                     'room': room,
                     'message': 'you can not reserve with a retrograde date'
                 })
-            if date_user in [_.date for _ in room.reservations.all()]:
+            if date_user in [_.date for _ in room.reservations.all() if _.date >= today]:
                 return render(request, 'reservation/room_reserve.html', context={
                     'room': room,
                     'message': f'on {date_user}, the room is already reserved'
                 })
             Reservation.objects.create(date=date_user, room=room, comment=comment)
             return redirect('/rooms/')
+
+
+def room_details_view(request, id):
+    today = datetime.now().date()
+
+    try:
+        room = Room.objects.get(pk=id)
+    except Room.DoesNotExist:
+        raise Http404
+    else:
+        return render(request, 'reservation/room_details.html', context={
+            'room': room,
+            'reservations': [_ for _ in room.reservations.order_by('date') if _.date >= today],
+        })
+
