@@ -36,7 +36,9 @@ def room_new_view(request):
 
 
 def rooms_view(request):
-    return render(request, 'reservation/rooms.html', context={'rooms': Room.objects.all()})
+    rooms = Room.objects.all()
+    today = datetime.now().date()
+    return render(request, 'reservation/rooms.html', context={'rooms': rooms, 'today': today})
 
 
 def room_delete_by_id_view(request, id):

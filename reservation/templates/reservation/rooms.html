@@ -7,7 +7,7 @@
                 <th>no.</th>
                 <th>name</th>
                 <th>capacity</th>
-                <th>room availability</th>
+                <th>available today</th>
                 <th>projector availability</th>
                 <th>edit room</th>
                 <th>delete room</th>
@@ -18,7 +18,8 @@
                     <td>{{ forloop.counter }}</td>
                     <td><a href="/room/details/{{ room.pk }}/">{{ room.name }}</a></td>
                     <td>{{ room.capacity }}</td>
-                    <td>room availability</td>
+                    <td>{% for obj in room.reservations.all %}{% if obj.date == today %}unavailable
+                    {% endif %}{% endfor %}</td>
                     <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>
                     <td><a href="/room/modify/{{ room.pk }}/">
                         <button>edit {{ room.name }}</button>
