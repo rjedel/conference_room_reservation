@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 from .models import Room, Reservation
@@ -68,7 +68,7 @@ def room_modify_by_id_view(request, id):
                 message = 'enter room name'
             other_rooms = Room.objects.exclude(name=room.name)
             if name in [room.name for room in other_rooms]:
-                message = f"room '{name}' already exists, choose a different name"
+                message = f"room '{name}' already exists"
             try:
                 if int(capacity) < 1:
                     message = 'capacity must be greater than 1'
@@ -95,22 +95,28 @@ def room_reserve_by_id_view(request, id):
     except Room.DoesNotExist:
         raise Http404
     else:
+        today = datetime.now().date()
+        reservations = [_ for _ in room.reservations.order_by('date') if _.date >= today]
         if request.method == 'GET':
-            return render(request, 'reservation/room_reserve.html', context={'room': room})
+            return render(request, 'reservation/room_reserve.html', context={
+                'room': room,
+                'reservations': reservations,
+            })
         if request.method == 'POST':
             date_form = request.POST.get('date')
             comment = request.POST.get('comment')
             date_user = datetime.strptime(date_form, "%Y-%m-%d").date()
-            today = datetime.now().date()
             if date_user < today:
                 return render(request, 'reservation/room_reserve.html', context={
                     'room': room,
-                    'message': 'you can not reserve with a retrograde date'
+                    'message': 'you can not reserve with a retrograde date',
+                    'reservations': reservations,
                 })
             if date_user in [_.date for _ in room.reservations.all() if _.date >= today]:
                 return render(request, 'reservation/room_reserve.html', context={
                     'room': room,
-                    'message': f'on {date_user}, the room is already reserved'
+                    'message': f'on {date_user}, the room is already reserved',
+                    'reservations': reservations,
                 })
             Reservation.objects.create(date=date_user, room=room, comment=comment)
             return redirect('/rooms/')
@@ -129,3 +135,30 @@ def room_details_view(request, id):
             'reservations': [_ for _ in room.reservations.order_by('date') if _.date >= today],
         })
 
+
+def search_view(request):
+    name = request.GET.get("name")
+
+    capacity = request.GET.get("capacity")
+    capacity = int(capacity) if capacity else 0
+
+    projector = request.GET.get('projector')
+
+    rooms = Room.objects.all()
+    if projector == "True":
+        rooms = rooms.filter(projector=1)
+    if projector == "notTrue":
+        rooms = rooms.filter(projector=0)
+    if capacity:
+        rooms = rooms.filter(capacity__gte=capacity)
+    if name:
+        rooms = rooms.filter(name__contains=name)
+
+    if len(rooms) == 0:
+        message = 'No rooms available for the given search criteria'
+    else:
+        message = False
+    return render(request, 'reservation/search.html', context={
+        'rooms': rooms,
+        'message': message,
+    })

@@ -1,0 +1,64 @@
+{% extends "reservation/base.html" %}
+{% block title %}Search for a room{% endblock %}
+{% block content %}
+    <form>
+        <table>
+            <tr>
+                <th><label for="id_name">Name:</label></th>
+                <td><input type="text" name="name" minlength="1" maxlength="255" id="id_name"></td>
+            </tr>
+            <tr>
+                <th><label for="id_capacity">Capacity:</label></th>
+                <td><input type="number" name="capacity" min="1" max="32767" step="1" id="id_capacity"></td>
+            </tr>
+            <tr>
+                <th><label for="id_projector">Projector:</label></th>
+                <td><input type="checkbox" name="projector" value="True" id="id_projector">room with a projector<br>
+                    <input type="checkbox" name="projector" value="notTrue" id="id_projector">room without a projector
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Search</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    {% if rooms %}
+        <table id="customers">
+            <tr>
+                <th>no.</th>
+                <th>name</th>
+                <th>capacity</th>
+                <th>available today</th>
+                <th>projector availability</th>
+                <th>edit room</th>
+                <th>delete room</th>
+                <th>book room</th>
+            </tr>
+            {% for room in rooms %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="/room/details/{{ room.pk }}/">{{ room.name }}</a></td>
+                    <td>{{ room.capacity }}</td>
+                    <td>{% for obj in room.reservations.all %}{% if obj.date == today %}unavailable
+                    {% endif %}{% endfor %}</td>
+                    <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>
+                    <td><a href="/room/modify/{{ room.pk }}/">
+                        <button>edit {{ room.name }}</button>
+                    </a></td>
+                    <td><a href="/room/delete/{{ room.pk }}/">
+                        <button>delete {{ room.name }}</button>
+                    </a></td>
+                    <td><a href="/room/reserve/{{ room.pk }}/">
+                        <button>reserve {{ room.name }}</button>
+                    </a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if message %}
+        <h1>{{ message }}</h1>
+    {% endif %}
+{% endblock %}
