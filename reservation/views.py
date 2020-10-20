@@ -32,7 +32,7 @@ def room_new_view(request):
             return render(request, 'reservation/room_new.html', context={'message': message})
         else:
             Room.objects.create(name=name, capacity=int(capacity), projector=projector)
-            return redirect('/rooms/')
+            return redirect('/')
 
 
 def rooms_view(request):
@@ -48,7 +48,7 @@ def room_delete_by_id_view(request, id):
         raise Http404
     else:
         room.delete()
-        return redirect('/rooms/')
+        return redirect('/')
 
 
 def room_modify_by_id_view(request, id):
@@ -86,7 +86,7 @@ def room_modify_by_id_view(request, id):
                 room.capacity = int(capacity)
                 room.projector = projector
                 room.save()
-                return redirect('/rooms/')
+                return redirect('/')
 
 
 def room_reserve_by_id_view(request, id):
@@ -119,7 +119,7 @@ def room_reserve_by_id_view(request, id):
                     'reservations': reservations,
                 })
             Reservation.objects.create(date=date_user, room=room, comment=comment)
-            return redirect('/rooms/')
+            return redirect('/')
 
 
 def room_details_view(request, id):
@@ -137,6 +137,7 @@ def room_details_view(request, id):
 
 
 def search_view(request):
+    today = datetime.now().date()
     name = request.GET.get("name")
 
     capacity = request.GET.get("capacity")
@@ -144,7 +145,7 @@ def search_view(request):
 
     projector = request.GET.get('projector')
 
-    rooms = Room.objects.all()
+    rooms = Room.objects.all().order_by('name')
     if projector == "True":
         rooms = rooms.filter(projector=1)
     if projector == "notTrue":
@@ -161,4 +162,12 @@ def search_view(request):
     return render(request, 'reservation/search.html', context={
         'rooms': rooms,
         'message': message,
+        'today': today,
+        'name': name,
+        'capacity': capacity,
+        'projector': projector,
     })
+
+
+def about_view(request):
+    return render(request, 'reservation/about.html')

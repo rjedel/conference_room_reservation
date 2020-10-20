@@ -5,16 +5,20 @@
         <table>
             <tr>
                 <th><label for="id_name">Name:</label></th>
-                <td><input type="text" name="name" minlength="1" maxlength="255" id="id_name"></td>
+                <td><input type="text" name="name" minlength="1" maxlength="255" id="id_name"
+                           {% if name %}value="{{ name }}" {% endif %}></td>
             </tr>
             <tr>
                 <th><label for="id_capacity">Capacity:</label></th>
-                <td><input type="number" name="capacity" min="1" max="32767" step="1" id="id_capacity"></td>
+                <td><input type="number" name="capacity" min="1" max="32767" step="1" id="id_capacity"
+                           {% if capacity %}value="{{ capacity }}" {% endif %}></td>
             </tr>
             <tr>
                 <th><label for="id_projector">Projector:</label></th>
-                <td><input type="checkbox" name="projector" value="True" id="id_projector">room with a projector<br>
-                    <input type="checkbox" name="projector" value="notTrue" id="id_projector">room without a projector
+                <td><input type="radio" name="projector" value="True" id="id_projector"
+                           {% if projector ==  'True' %}checked{% endif %}>room with a projector<br>
+                    <input type="radio" name="projector" value="notTrue" id="id_projector"
+                           {% if projector ==  'notTrue' %}checked{% endif %}>room without a projector
                 </td>
             </tr>
             <tr>
