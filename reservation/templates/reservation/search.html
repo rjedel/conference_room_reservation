@@ -44,7 +44,7 @@
             {% for room in rooms %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><a href="/room/details/{{ room.pk }}/">{{ room.name }}</a></td>
+                    <td><a href="{% url 'room-details' room.pk %}">{{ room.name }}</a></td>
                     <td>{{ room.capacity }}</td>
                     {% if room.reserved %}
                         <td style="color:red;">unavailable</td>
@@ -57,13 +57,13 @@
                     {% else %}
                         <td style="color:red;">&#9746;</td>
                     {% endif %}
-                    <td><a href="/room/modify/{{ room.pk }}/">
+                    <td><a href="{% url 'room-modify' room.pk %}">
                         <button>edit {{ room.name }}</button>
                     </a></td>
-                    <td><a href="/room/delete/{{ room.pk }}/">
+                    <td><a href="{% url 'room-delete' room.pk %}">
                         <button>delete {{ room.name }}</button>
                     </a></td>
-                    <td><a href="/room/reserve/{{ room.pk }}/">
+                    <td><a href="{% url 'room-reserve' room.pk %}">
                         <button>reserve {{ room.name }}</button>
                     </a></td>
                 </tr>

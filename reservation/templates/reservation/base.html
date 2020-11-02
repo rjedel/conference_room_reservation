@@ -11,10 +11,10 @@
 </head>
 <body>
 <div class="topnav">
-    <a class="active" href="/">Home</a>
-    <a href="/room/new/">Add a room</a>
-    <a href="/search/">Search</a>
-    <a href="/about/">About</a>
+    <a class="active" href="{% url 'room-table' %}">Home</a>
+    <a href="{% url 'room-new' %}">Add a room</a>
+    <a href="{% url 'room-search' %}">Search</a>
+    <a href="{% url 'room-about' %}">About</a>
 </div>
 
 {% block content %} {% endblock %}

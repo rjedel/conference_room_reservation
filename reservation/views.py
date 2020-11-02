@@ -32,7 +32,7 @@ def room_new_view(request):
             return render(request, 'reservation/room_new.html', context={'message': message})
         else:
             Room.objects.create(name=name, capacity=int(capacity), projector=projector)
-            return redirect('/')
+            return redirect('room-table')
 
 
 def rooms_view(request):
@@ -44,19 +44,19 @@ def rooms_view(request):
     return render(request, 'reservation/rooms.html', context={'rooms': rooms, })
 
 
-def room_delete_by_id_view(request, id):
+def room_delete_by_id_view(request, room_id):
     try:
-        room = Room.objects.get(pk=id)
+        room = Room.objects.get(pk=room_id)
     except Room.DoesNotExist:
         raise Http404
     else:
         room.delete()
-        return redirect('/')
+        return redirect('room-table')
 
 
-def room_modify_by_id_view(request, id):
+def room_modify_by_id_view(request, room_id):
     try:
-        room = Room.objects.get(pk=id)
+        room = Room.objects.get(pk=room_id)
     except Room.DoesNotExist:
         raise Http404
     else:
@@ -89,12 +89,12 @@ def room_modify_by_id_view(request, id):
                 room.capacity = int(capacity)
                 room.projector = projector
                 room.save()
-                return redirect('/')
+                return redirect('room-table')
 
 
-def room_reserve_by_id_view(request, id):
+def room_reserve_by_id_view(request, room_id):
     try:
-        room = Room.objects.get(pk=id)
+        room = Room.objects.get(pk=room_id)
     except Room.DoesNotExist:
         raise Http404
     else:
@@ -122,14 +122,14 @@ def room_reserve_by_id_view(request, id):
                     'reservations': reservations,
                 })
             Reservation.objects.create(date=date_user, room=room, comment=comment)
-            return redirect('/')
+            return redirect('room-table')
 
 
-def room_details_view(request, id):
+def room_details_view(request, room_id):
     today = datetime.now().date()
 
     try:
-        room = Room.objects.get(pk=id)
+        room = Room.objects.get(pk=room_id)
     except Room.DoesNotExist:
         raise Http404
     else:
@@ -170,7 +170,6 @@ def search_view(request):
     return render(request, 'reservation/search.html', context={
         'rooms': rooms,
         'message': message,
-        'today': today,
         'name': name,
         'capacity': capacity,
         'projector': projector,
