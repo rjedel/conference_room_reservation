@@ -38,7 +38,10 @@ def room_new_view(request):
 def rooms_view(request):
     rooms = Room.objects.all()
     today = datetime.now().date()
-    return render(request, 'reservation/rooms.html', context={'rooms': rooms, 'today': today})
+    for room in rooms:
+        reservation_dates = [reservation.date for reservation in room.reservations.all()]
+        room.reserved = today in reservation_dates
+    return render(request, 'reservation/rooms.html', context={'rooms': rooms, })
 
 
 def room_delete_by_id_view(request, id):
@@ -159,6 +162,11 @@ def search_view(request):
         message = 'No rooms available for the given search criteria'
     else:
         message = False
+
+    for room in rooms:
+        reservation_dates = [reservation.date for reservation in room.reservations.all()]
+        room.reserved = today in reservation_dates
+
     return render(request, 'reservation/search.html', context={
         'rooms': rooms,
         'message': message,

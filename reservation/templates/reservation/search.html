@@ -46,8 +46,11 @@
                     <td>{{ forloop.counter }}</td>
                     <td><a href="/room/details/{{ room.pk }}/">{{ room.name }}</a></td>
                     <td>{{ room.capacity }}</td>
-                    <td>{% for obj in room.reservations.all %}{% if obj.date == today %}unavailable
-                    {% endif %}{% endfor %}</td>
+                    {% if room.reserved %}
+                        <td style="color:red;">unavailable</td>
+                    {% else %}
+                        <td style="color:green;">available</td>
+                    {% endif %}
                     {#                    <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>#}
                     {% if room.projector %}
                         <td style="color:green;">&#9745;</td>
