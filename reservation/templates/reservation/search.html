@@ -48,7 +48,12 @@
                     <td>{{ room.capacity }}</td>
                     <td>{% for obj in room.reservations.all %}{% if obj.date == today %}unavailable
                     {% endif %}{% endfor %}</td>
-                    <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>
+                    {#                    <td>{{ room.projector|yesno:"yeah,no,maybe" }}</td>#}
+                    {% if room.projector %}
+                        <td style="color:green;">&#9745;</td>
+                    {% else %}
+                        <td style="color:red;">&#9746;</td>
+                    {% endif %}
                     <td><a href="/room/modify/{{ room.pk }}/">
                         <button>edit {{ room.name }}</button>
                     </a></td>
